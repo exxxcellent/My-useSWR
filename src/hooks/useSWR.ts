@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 
-interface Props {
+interface Props<Data> {
     url: string;
-    fetcher: (url: string) => Promise<any>;
+    fetcher: (url: string) => Promise<Data>;
     options?: Options | undefined;
 }
 
@@ -18,7 +18,7 @@ interface Options {
     onError?: (error: Error) => void;
 }
 
-export default function useSWR<Data>({ url, fetcher, options }: Props): Return<Data> {
+export default function useSWR<Data>({ url, fetcher, options }: Props<Data>): Return<Data> {
     const [data, setData] = useState<Data | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [error, setError] = useState<Error | null>(null);
