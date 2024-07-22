@@ -83,9 +83,9 @@ function App() {
       url: "https://jsonplaceholder.typicode.com/users",
       fetcher,
       options: {
-        onSuccess: () => {
-          console.log("Data is fetched!");
-        }
+        onSuccess: (data) => (
+          data.filter(user => user.name !== "Nicholas Runolfsdottir V")
+        )
       }
     }
   );

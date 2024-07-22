@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 interface Props<Data> {
     url: string;
     fetcher: (url: string) => Promise<Data>;
-    options?: Options | undefined;
+    options?: Options<Data> | undefined;
 }
 
 interface Return<Data> {
@@ -12,9 +12,9 @@ interface Return<Data> {
     error: Error | null;
 }
 
-interface Options {
+interface Options<Data> {
     revalidate?: number;
-    onSuccess?: () => void;
+    onSuccess?: (data: Data) => Data;
     onError?: (error: Error) => void;
 }
 
@@ -28,7 +28,10 @@ export default function useSWR<Data>({ url, fetcher, options }: Props<Data>): Re
             .then((data: Data) => {
                 setData(data);
                 setIsLoading(false);
-                options?.onSuccess ? options.onSuccess() : null;
+                if (options?.onSuccess) {
+                    const filteredData = options.onSuccess(data);
+                    setData(filteredData)
+                }
             })
             .catch((error: Error) => {
                 setIsLoading(false);
@@ -47,7 +50,10 @@ export default function useSWR<Data>({ url, fetcher, options }: Props<Data>): Re
                     .then((data: Data) => {
                         setData(data);
                         setIsLoading(false);
-                        options?.onSuccess ? options.onSuccess() : null;
+                        if (options?.onSuccess) {
+                            const filteredData = options.onSuccess(data);
+                            setData(filteredData)
+                        }
                     })
                     .catch((error: Error) => {
                         setIsLoading(false);

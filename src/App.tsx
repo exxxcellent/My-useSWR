@@ -5,16 +5,20 @@ interface User {
     name: string;
 }
 
-const fetcher = (url: string) => fetch(url).then(res => res.json());
+const fetcher = async (url: string) => await fetch(url).then(res => res.json());
 
 function App() {
     const { data, isLoading, error } = useSWR<User[]>({
         url: "https://jsonplaceholder.typicode.com/users",
         fetcher,
         options: {
-            revalidate: 5
+            onSuccess: (data) => (
+                data.filter(user => user.name !== "Nicholas Runolfsdottir V")
+            )
         }
     });
+
+    console.log(data)
 
     return <ul>
         {isLoading ? <div>Loading...</div> : null}
