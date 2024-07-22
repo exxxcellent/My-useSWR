@@ -18,8 +18,6 @@ function App() {
         }
     });
 
-    console.log(data)
-
     return <ul>
         {isLoading ? <div>Loading...</div> : null}
         {error !== null ? <div>{error.message}</div> : null}
