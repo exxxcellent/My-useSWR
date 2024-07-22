@@ -26,12 +26,21 @@ export default function useSWR<Data>({ url, fetcher, options }: Props<Data>): Re
     useEffect(() => {
         fetcher(url)
             .then((data: Data) => {
-                setData(data);
+                if (!sessionStorage.getItem(url)) {
+                    sessionStorage.setItem(url, JSON.stringify(data));
+                    console.log("Recording");
+                    setData(data);
+                } else {
+                    const cacheItem = sessionStorage.getItem(url);
+                    console.log("Get");
+                    setData(cacheItem != null ? JSON.parse(cacheItem) : null)
+                }
                 setIsLoading(false);
                 if (options?.onSuccess) {
                     const filteredData = options.onSuccess(data);
                     setData(filteredData)
                 }
+
             })
             .catch((error: Error) => {
                 setIsLoading(false);
@@ -48,7 +57,15 @@ export default function useSWR<Data>({ url, fetcher, options }: Props<Data>): Re
             const intervalId = setInterval(() => {
                 fetcher(url)
                     .then((data: Data) => {
-                        setData(data);
+                        if (!sessionStorage.getItem(url)) {
+                            sessionStorage.setItem(url, JSON.stringify(data));
+                            console.log("Recording");
+                            setData(data);
+                        } else {
+                            const cacheItem = sessionStorage.getItem(url);
+                            console.log("Get");
+                            setData(cacheItem != null ? JSON.parse(cacheItem) : null)
+                        }
                         setIsLoading(false);
                         if (options?.onSuccess) {
                             const filteredData = options.onSuccess(data);
